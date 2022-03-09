@@ -1,0 +1,25 @@
+{
+  "EmbedSecret": "oXTE2Pdgh4da3deRmZ8HTZ6G9nH8MnLt",
+  "ReportEmbedSecret": "nJAux7C3vOs0JZxcz8DZ74ob3illFeg",
+  "Serverurl": "http://localhost:56537/bi/site/site1",
+  "ReportServerurl": "http://localhost:56537/reporting/site/site2",
+  "Email": "vasanth.gandhi@syncfusion.com",
+  "ReportEmail": "vasanth.gandhi@syncfusion.com",
+  "Environment": "on-premise",
+  "DisplayName": "Vasanth Gandhi",
+  "BaseUrl": "https://localhost:44390",
+  "SiteIdentifier": "site/site1",
+  "ReportSiteIdentifier": "site/site2",
+  "RootUrl": "http://localhost:56537/bi",
+  "ReportRootUrl": "http://localhost:56537/reporting"
+}
+//{
+//  "EmbedSecret": "qhLaXRC5VAx9iJGoJcAFn3ZTjZrPn2e",
+//  "Serverurl": "https://adhoc.boldbi.com/bi/site/site1",
+//  "Email": "demo@boldbi.com",
+//  "Environment": "on-premise",
+//  "DisplayName": "John Doe",
+//  "BaseUrl": "https://localhost:44390/",
+//  "SiteIdentifier": "site/site1",
+//  "RootUrl": "https://adhoc.boldbi.com/bi"
+//}

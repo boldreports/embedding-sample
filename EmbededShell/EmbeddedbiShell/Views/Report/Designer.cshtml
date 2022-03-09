@@ -1,0 +1,65 @@
+﻿@{
+    var globalAppSettings = ViewBag.GlobalAppSettings as GlobalAppSettings;
+    var isEdit = ViewBag.IsEdit != null && (bool)ViewBag.IsEdit;
+    var serviceAuthorizationToken = ViewBag.ServiceAuthorizationToken;
+    var dataSource1 = ViewBag.DataSource1;
+    var dataSet1 = ViewBag.DataSet1;
+    var sharedDatasets = ViewBag.SharedDatasets;
+    var sharedDataInfo = ViewBag.SharedDataInfo;
+    var categoryName = ViewBag.CatagoryName;
+    var reportName = ViewBag.ReportName;
+    var reportPath = ViewBag.CatagoryName + "/" + ViewBag.reportName;
+    var reportServerURL = globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + globalAppSettings.EmbedDetails.ReportSiteIdentifier;
+    var reportDesignerServiceURL = globalAppSettings.EmbedDetails.ReportRootUrl + "/reportservice/api/Designer";
+    var mappingInfo = ViewBag.MappingInfo;
+    var isDraft = ViewBag.isDraft;
+    var categoryId = ViewBag.CatagoryId;
+    var reportId = ViewBag.ReportId;
+    var version = ViewBag.Version;
+}
+
+@model SampleCoreApp.Models.SamplesTreeViewModel
+@using Microsoft.AspNetCore.Http;
+@using SampleCoreApp.Controllers;
+@using SampleCoreApp;
+@using System.Web;
+@using Newtonsoft.Json;
+    <div id="reportContainer" class="tab-pane" style="overflow:hidden;position:static;margin:0; padding: 0;height:100%;width:100%">
+        <div style="height:100%;width:100%;overflow:hidden;box-sizing:border-box" id="reportingTool"></div>
+    </div>
+    <script type="text/javascript">
+    document.title = "Bold Reports";
+
+        var countSnapItemUrl = "@Url.Action("countSnap", "Home")";
+        var getSnapItemUrl = "@Url.Action("GetSnap", "Home")";
+        var categoryId = '@categoryId';
+        var dataSource1 = '@Html.Raw(@dataSource1)';
+        var dataSet1 = '@Html.Raw(@dataSet1)';
+        var sharedDatasets = '@Html.Raw(@sharedDatasets)';
+        var sharedDataInfo = '@Html.Raw(@sharedDataInfo)';
+        var serviceAuthorizationToken = "@serviceAuthorizationToken";
+        var catagoryId = "@categoryId";
+        var isEdit = "@isEdit";
+        var categoryName = "@categoryName";
+        var reportName = "@reportName";
+        var reportPath = "@reportPath";
+        var controlId = 'reportingTool';
+        var isEditReport = false;
+        var fileCabinetDialog = null;
+        var reportServerURL = "@reportServerURL";
+        var isDraft = "@isDraft";
+        isDraft = isDraft.toLowerCase();
+        var reportId = "@reportId";
+        var reportDesignerServiceURL = "@reportDesignerServiceURL";
+        var reportMappingFieldInfo = null;
+        var version = "@version";
+       
+        if (isEdit.toLowerCase() === "true") {
+            isEditReport = true;
+        }
+
+    $(document).ready(function () {https://gitlab.syncfusion.com/data-science/embedded-bi-shell/blob/development/EmbededShell/EmbeddedbiShell/Models/SamplesManager.cs
+        addReportDesigner();
+    });
+
+</script>

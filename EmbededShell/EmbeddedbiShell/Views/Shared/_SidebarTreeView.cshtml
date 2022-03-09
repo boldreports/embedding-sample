@@ -1,0 +1,388 @@
+﻿@using Newtonsoft.Json;
+@{
+    var globalAppSettings = ViewBag.GlobalAppSettings as GlobalAppSettings;
+    var index = 0;
+    var dashboardServerApiUrl = globalAppSettings.EmbedDetails.RootUrl + "/api/" + globalAppSettings.EmbedDetails.SiteIdentifier;
+    var accessToken = globalAppSettings.UserToken != null ? globalAppSettings.UserToken.AccessToken : "";
+    var currentUserEmail = globalAppSettings.UserToken != null ? globalAppSettings.UserToken.Email : "";
+    var currentReportUserEmail = globalAppSettings.EmbedDetails.ReportEmail;
+    var email = Model != null && Model.UserDetails != null && !string.IsNullOrWhiteSpace(Model.UserDetails.Email) ? Model.UserDetails.Email : null;
+    var userID = ViewBag.UserId;
+    var updateSampleUrl = Url.Action("", "Home");
+    var baseUrl = globalAppSettings.EmbedDetails.BaseUrl;
+    var dashboardName = ViewBag.DashboardName;
+    var reportName = ViewBag.ReportName;
+    var newreportName = ViewBag.NewReportName;
+    List<SamplesSchemaViewModel> myDashboards = new List<SamplesSchemaViewModel>();
+    List<SamplesSchemaViewModel> sharedDashboards = new List<SamplesSchemaViewModel>();
+    List<SamplesSchemaViewModel> myReports = new List<SamplesSchemaViewModel>();
+    List<SamplesSchemaViewModel> sharedReports = new List<SamplesSchemaViewModel>();
+    List<SamplesSchemaViewModel> sidebarMenus = Model.SamplesSchemaCollection;
+    foreach (var category in sidebarMenus)
+    {
+        if (category.Id == 1)
+        {
+            List<SamplesSchemaViewModel> dashboards = category.Samples;
+
+            if (dashboards != null && dashboards.Count > 0)
+            {
+                myDashboards = dashboards.Where(x => (x.CreatedById.ToString() == userID.ToString() && x.Id != 101)).ToList();
+                sharedDashboards = dashboards.Where(x => (x.CreatedById.ToString() != userID.ToString() && x.Id != 101)).ToList();
+            }
+        }
+        else
+        {
+            List<SamplesSchemaViewModel> reports = category.Samples;
+
+            if (reports != null && reports.Count > 0)
+            {
+                myReports = reports.Where(x => (x.CreatedById.ToString() == userID.ToString() && x.Id != 201)).ToList();
+                sharedReports = reports.Where(x => (x.CreatedById.ToString() == userID.ToString() && x.Id != 201)).ToList();
+            }
+        }
+    }
+}
+
+<div class="sidebar" style="padding:0px; background:#081E44;">
+    <nav>
+        <ul id="sidebar-menu" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <div class="dropdown" style="text-align: center">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="background-color:#6274FF;width:250px;"> Create
+                    <span class="caret" style="padding-left:155px"></span>
+                </button>
+                <ul class="dropdown-menu"  style="background-color: #fff;width:250px;">
+                    <a id="create-new-report" onclick="CreateReport()" class="nav-link sample no-hover" style="font-size:15px; cursor:pointer;background-color: #fff">
+                        <p style="color:black; font-size:15px;margin-left:-30px">
+                            Report
+                        </p>
+                    </a>
+                    <a id="create-new" onclick="Create()" class="nav-link sample no-hover" style="font-size: 15px; cursor: pointer;background-color: #fff">
+                        <p style="color: black; font-size:15px;margin-left:-30px">
+                            Dashboard
+                        </p>
+                    </a>
+                </ul>
+            </div>
+            @foreach (var category in Model.SamplesSchemaCollection)
+            {
+                var hasChild = category.IsCategory && category.HasChild && !category.AsTab;
+                var hasTreeview = hasChild ? "has-treeview" : string.Empty;
+                var isActive = hasChild ? ViewBag.ParentName?.ToLower() == category.Name.ToLower() ? "active" : ViewBag.Name.ToLower() == category.Name.ToLower() ? "active" : "" : "";
+                var hasMenuOpen = (hasChild) ? "menu-open" : "";
+                var url = hasChild ? "#" : @Url.Action("Index", "Home", new { categoryName = @category.Name.ToLower() });
+                index++;
+                if (category.Id == 2)
+                {
+                    <li class="nav-item  @hasTreeview @hasMenuOpen">
+                        <a href="@url" id="item_@category.Id" class="nav-link category @isActive" style="background-color:#081E44;width:275px;">
+                            <i class="nav-icon fas @category.SpiteClass" style="margin-top:5px; margin-left: 10px; color: #BCCEEB"></i>
+                            <p style="color: #BCCEEB; font-weight:bold;">
+
+
+                                Reports
+
+                            </p>
+                            @if (category.Samples != null && !category.AsTab)
+                            {
+                                <i class="left fas fa-angle-right" style="float: right; color: #fff; margin-top: 5px;margin-right:5px"></i>
+                            }
+                        </a>
+
+                        <ul id="sidemenu-item" class="nav nav-treeview">
+                            @if (category.Id == 2)
+                            {
+                                <li class="nav-item nav-item-heading">
+                                    <a id="create-new-report" onclick="CreateNewReport()" class="nav-link sample no-hover" style="color: #BCCEEB; font-size:15px; padding-left:50px; cursor:pointer">
+                                        <p>
+                                            @*<i class="fas fa-plus nav-icon"></i>*@
+                                            Create New
+                                        </p>
+                                    </a>
+                                    <div id="create-report-name" class="input-group input-group-sm" style="display:none;">
+                                        <input id="report-name" class="form-control form-control-navbar" style="border:none; padding-left:20px;margin-left:50px" type="text" placeholder="Enter the report name" aria-label="Search">
+                                        <div class="input-group-append">
+                                            <i id="report-loading-icon" class="fas fa-1x fa-spinner fa-spin" style="display:none; float: left; width:15px; height:15px; margin-top:7px; margin-left:5px; margin-right:5px;"></i>
+                                            <button id="create-report" class="btn btn-navbar" style="color: #ffff" type="submit">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                            <button class="btn btn-navbar" onclick="CloseItemNewReport()" style="color: #ffff" type="submit">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                @if (category.Samples != null && !category.AsTab)
+                                {
+                                    if (myReports.Count > 0 || reportName != null)
+                                    {
+                                        @*<li class="nav-item nav-item-heading">
+                                        <a class="nav-link sample no-hover" style="font-size:15px; color: #fff; padding-left:50px">
+                                            <p>Owned by Me</p>
+                                        </a>
+                                    </li>*@
+                                        if (newreportName != null)
+                                        {
+                                            <li id="new-item" class="nav-item">
+                                                <a class="nav-link sample active" style="font-size:14px;">
+                                                    <i class="far"> </i>
+                                                    <p id="report-item" style="width: 200px; padding-top: 5px;">@reportName</p>
+                                                    <i id="save-report-item" style="vertical-align: super; cursor:pointer" class="nav-option dbrd-icon fas fa-save"> </i>
+                                                </a>
+                                            </li>
+                                        }
+                                        @foreach (var sample in myReports)
+                                        {
+                                            @if (sample.Id != 201)
+                                            {
+                                                var isChildActive = ViewBag.Name.ToLower() == sample.Name.ToLower() ? "active" : "";
+                                                var sampleUrl = @Url.Action("Index", "Home", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email });
+                                                var reportViewerUrl = @Url.Action("Viewer", "Report", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email, id = @sample.ItemID });
+                                                var reportDeleteUrl = @Url.Action("DeleteItem", "Report");
+                                                var reportDesignerUrl = @Url.Action("Designer", "Report", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email, edit = true, id = sample.ItemID });
+
+                                                <li class="nav-item">
+                                                    <a class="nav-link sample @isChildActive" style="font-size:14px; cursor:pointer;">
+                                                        @if (!sample.IsEdit)
+                                                        {
+                                                            <i class="far"> </i>
+                                                            <p data-src="@reportViewerUrl" onclick="ViewReport(this)" class="dashboard-text" style="padding-top: 5px; width:auto">@sample.Name</p>
+                                                            @*<i id="share-item" onclick="ShareDashboard('@sample.IsPublic', '@sample.Name', '@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-share-alt dbrd-icon"> </i>*@
+                                                            @*<i id="refresh-item" onclick="RefreshDashboard('@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-sync-alt dbrd-icon"> </i>*@
+                                                            <i id="edit-item_" title="Edit" onclick="EditReport(this, '@reportDesignerUrl', '@sample.Name', '@sample.ItemID', '@sample.IsDraft')" data-ng-animate="@sample.Name" style="display:none;vertical-align: super;" class="nav-option dbrd-icon fas fa-pencil-alt"> </i>
+                                                            <i id="delete-item_" title="Delete" onclick="DeleteReport(this, '@reportDeleteUrl', '@sample.ItemID', '@sample.Name')" style="display: none; vertical-align: super;" class="nav-option fas fa-trash-alt dbrd-icon"> </i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="far"> </i>
+                                                            <p id="report-item" style="width: 200px; padding-top: 5px;">@sample.Name</p>
+                                                            <i id="save-report-item" style="vertical-align: super; cursor:pointer" class="nav-option dbrd-icon fas fa-save"> </i>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                    @*if (sharedDashboards.Count > 0)
+                                {
+                                    <li class="nav-item nav-item-heading">
+                                        <a class="nav-link sample no-hover" style="font-size:15px; color: #fff; padding-left:50px">
+                                            <p>Shared with me</p>
+                                        </a>
+                                    </li>
+                                    @foreach (var sample in sharedDashboards)
+                                    {
+                                        @if (sample.Id != 101)
+                                        {
+                                            var isChildActive = ViewBag.Name.ToLower() == sample.Name.ToLower() ? "active" : "";
+                                            var sampleUrl = @Url.Action("Index", "Home", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email });
+                                            <li class="nav-item">
+                                                <a href="@sampleUrl" class="nav-link sample @isChildActive" style="font-size:14px;">
+                                                    <i class="far"> </i>
+                                                    <p>@sample.Name</p>
+                                                </a>
+                                            </li>
+                                         }
+                                     }
+                                }*@
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item  @hasTreeview @hasMenuOpen">
+                        <a href="@url" id="item_@category.Id" class="nav-link category @isActive" style="width:275px;background-color:#081E44;">
+                            <i class="nav-icon fas @category.SpiteClass" style="margin-left: 10px; color: #BCCEEB"></i>
+                            <p style="color: #BCCEEB; font-weight: bold; ">
+
+
+                                Dashboards
+
+                            </p>
+                            @if (category.Samples != null && !category.AsTab)
+                            {
+                                <i class="left fas fa-angle-right" style=" float: right; color: #fff; margin-top: 5px;margin-right:5px"></i>
+                            }
+                        </a>
+
+                        <ul id="sidemenu-item" class="nav nav-treeview">
+                            @if (category.Id == 1)
+                            {
+
+                                <li class="nav-item nav-item-heading">
+                                    <a id="create-new" onclick="CreateNew()" class="nav-link sample no-hover" style="color: #BCCEEB; font-size: 15px; padding-left: 50px; cursor: pointer">
+                                        <p>
+                                            @*<i class="fas fa-plus nav-icon"></i>*@
+                                            Create New
+                                        </p>
+                                    </a>
+                                    <div id="dbrd-name" class="input-group input-group-sm" style="display:none;">
+                                        <input id="dashboard-name" class="form-control form-control-navbar" style="border: none; padding-left: 20px; margin-left: 50px" type="text" placeholder="Enter the dashboard name" aria-label="Search">
+                                        <div class="input-group-append">
+                                            <button id="create-dashboard" class="btn btn-navbar" style="color: #ffff" type="submit">
+                                                <i class="fas fa-save"></i>
+                                            </button>
+                                            <button class="btn btn-navbar" onclick="CloseItem()" style="color: #ffff" type="submit">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </li>
+
+
+                                @if (category.Samples != null && !category.AsTab)
+                                {
+                                    if (myDashboards.Count > 0 || dashboardName != null)
+                                    {
+                                        @*<li class="nav-item nav-item-heading">
+                                        <a class="nav-link sample no-hover" style="font-size:15px; color: #fff; padding-left:50px">
+                                            <p>Owned by Me</p>
+                                        </a>
+                                    </li>*@
+                                        if (dashboardName != null)
+                                        {
+                                            <li id="new-item" class="nav-item">
+                                                <a class="nav-link sample active" style="font-size:14px;">
+                                                    <i class="far"> </i>
+                                                    <p id="new-item-name" style="width: 200px; padding-top: 5px;">@dashboardName</p>
+                                                    <i id="save-item" style="vertical-align: super; cursor:pointer" class="nav-option dbrd-icon fas fa-save"> </i>
+                                                </a>
+                                            </li>
+                                        }
+                                        @foreach (var sample in myDashboards)
+                                        {
+                                            @if (sample.Id != 101)
+                                            {
+                                                var isChildActive = ViewBag.Name.ToLower() == sample.Name.ToLower() ? "active" : "";
+                                                var sampleUrl = @Url.Action("Index", "Home", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email });
+                                                <li class="nav-item">
+                                                    <a class="nav-link sample @isChildActive" style="font-size:14px; cursor:pointer;">
+                                                        @if (!sample.IsEdit)
+                                                        {
+                                                            <i class="far"> </i>
+                                                            <p data-src="@sampleUrl" onclick="ViewDashboard(this)" class="dashboard-text" style="padding-top: 5px;">@sample.Name</p>
+                                                            @*<i id="share-item" onclick="ShareDashboard('@sample.IsPublic', '@sample.Name', '@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-share-alt dbrd-icon"> </i>*@
+                                                            <i id="refresh-item" onclick="RefreshDashboard('@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-sync-alt dbrd-icon"> </i>
+                                                            <i id="edit-item" onclick="EditDashboard(this)" data-ng-animate="@sample.Name" style="display: none; vertical-align: super;" class="nav-option dbrd-icon fas fa-pencil-alt"> </i>
+                                                            <i id="delete-item" onclick="deleteItem(this, '@sample.Name','@sample.ItemID')" style="display: none; vertical-align: super;" class="nav-option fas fa-trash-alt dbrd-icon"> </i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="far"> </i>
+                                                            <p class="dashboard-item" style="width: 200px;cursor:pointer; padding-top: 5px;">@sample.Name</p>
+                                                            <i id="save-item" style="vertical-align: super; cursor:pointer" class="nav-option dbrd-icon fas fa-save"> </i>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                    @*if (sharedDashboards.Count > 0)
+                                {
+                                    <li class="nav-item nav-item-heading">
+                                        <a class="nav-link sample no-hover" style="font-size:15px; color: #fff; padding-left:50px">
+                                            <p>Shared with me</p>
+                                        </a>
+                                    </li>
+                                    @foreach (var sample in sharedDashboards)
+                                    {
+                                        @if (sample.Id != 101)
+                                        {
+                                            var isChildActive = ViewBag.Name.ToLower() == sample.Name.ToLower() ? "active" : "";
+                                            var sampleUrl = @Url.Action("Index", "Home", new { categoryName = @category.Name.ToLower(), sampleName = @sample.Name.ToLower(), email = @email });
+                                            <li class="nav-item">
+                                                <a href="@sampleUrl" class="nav-link sample @isChildActive" style="font-size:14px;">
+                                                    <i class="far"> </i>
+                                                    <p>@sample.Name</p>
+                                                </a>
+                                            </li>
+                                         }
+                                     }
+                                }*@
+                                }
+                            }
+                        </ul>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
+<script>
+    var serverApiUrl = '@dashboardServerApiUrl';
+    var accessToken = '@accessToken';
+    var currentUserId = '@userID';
+    var currentUserEmail = '@currentUserEmail';
+    var currentReportUserEmail = '@currentReportUserEmail';
+    var baseUrl = "@baseUrl";
+    var draftUrl = "@Url.Action("AddReportDraft", "Report")";
+    var isReportExistUrl = "@Url.Action("IsReportExist", "Report")";
+    var reportviewerUrl = "@Url.Action("Viewer", "Report")";
+    var reportDeleteUrl = "@Url.Action("DeleteItem", "Report")";
+    var designerUrl = "@Url.Action("Index", "Designer")";
+    var deleteItemUrl = "@Url.Action("DeleteItem", "Home")";
+
+    @*function CreateDbrd() {
+        $("#create-new").css("display","none");
+        $("#dbrd-name").css("display","flex");
+    }
+
+    function CloseItem() {
+        $("#create-new").css("display", "block");
+        $("#dbrd-name").css("display", "none");
+    }
+
+    function ViewDashboard(args) {
+        document.location.href = args.dataset.src;
+    }
+
+    $(document).on("click", "#create-dashboard", function () {
+        $("#create-new").css("display", "block");
+        $("#dbrd-name").css("display", "none");
+        $("#loading-item").removeClass("hide");
+        $("#loading-item").addClass("show-flex");
+        var dbrdName = $("#dashboard-name").val();
+        openDesignerForCreate(dbrdName);
+    });
+
+    function openDesignerForCreate(dbrdName) {
+        var accessToken = "@accessToken";
+        $.ajax({
+            type: "POST",
+            url: "@dashboardServerApiUrl" + "/v4.0/dashboards/draft",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', "bearer " + accessToken)
+            },
+            success: function (data) {
+                var userEmail = getParams(document.location.href, "email");
+
+                //var tabs = document.getElementById("sidemenu-item");
+                //var liElement = document.createElement("li");
+                //liElement.className = "nav-item";
+                //liElement.style.cursor = "pointer";
+                //var anchr = document.createElement("A");
+                //anchr.style.fontSize = "14px";
+                //anchr.setAttribute("class", "nav-link sample active");
+                //var para = document.createElement("p");
+                //para.style.width = "230px";
+                //para.style.paddingTop = "5px";
+                //para.innerText = dbrdName;
+                //var icon = document.createElement("i");
+                //icon.style.display = "none";
+                //icon.style.verticalAlign = "super";
+                //icon.setAttribute("class", "nav-option fas fa-save dbrd-icon");
+                //icon.id = "save-item";
+                //anchr.appendChild(para);
+                //anchr.appendChild(icon);
+                //liElement.appendChild(anchr);
+
+                //tabs.insertBefore(liElement, tabs.childNodes[6]);
+
+                document.location.href = designerUrl + "?id=" + data.Id + "&name=" + dbrdName + (isEmptyOrWhiteSpace(userEmail) ? "" : "&email=" + userEmail);
+            }
+        });
+    }*@
+</script>
+
