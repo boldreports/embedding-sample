@@ -1,0 +1,235 @@
+﻿.profile-menu-action {
+    color: #686868;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+.profile-info {
+    border-bottom: 1px solid #bcc3cb;
+    height: 40px;
+}
+
+.tab-pane > .overlay-wrapper > .overlay {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+}
+
+.e-dashboarddesigner-designPanel .e-dashboarddesigner-bannerPanel, #sample_dashboard_embeddedbi_designAreaContainer {
+    border: 0px !important
+}
+
+.has-treeview.menu-open {
+    width: 100%;
+}
+
+.multi-tab.nav-link {
+    cursor: pointer;
+}
+
+.hide {
+    display: none !important;
+}
+
+.show {
+    display: block !important;
+}
+
+.show-flex {
+    display: flex !important;
+    z-index: 150 !important;
+}
+
+.has-treeview.menu-open .nav-item {
+    width: 100%;
+}
+
+    .has-treeview.menu-open .nav-item p {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.nav-option {
+    padding-right: 10px;
+    /*display:none !important; */
+}
+
+/*.nav-link.sample.active .nav-option {
+    display: inline !important;
+}*/
+
+.nav-link.sample:hover .nav-option {
+    display: inline !important;
+}
+
+.nav-link.category {
+    padding: 10px 10px 10px 15px !important;
+}
+
+.nav-link.sample {
+    padding: 5px 5px 5px 47px;
+    line-height: 1.25;
+}
+
+#edit-nav-button, #cancel-nav-button {
+    background-color: #007bff;
+    color: #ffffff;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+#create-nav-button, #save-nav-button {
+    color: #007bff;
+    background-color: #ffffff;
+    margin-left: 10px;
+    border-radius: 5px;
+    border-color: #007bff;
+    border-width: 2px;
+    border-style: solid;
+}
+
+#dashboard-name-text {
+    margin-top: 5px;
+}
+
+.os-content{
+    padding: 0 !important;
+}
+
+.nav-link {
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+#sidebar-menu {
+    /*border-left-width: 5px;*/
+    border-left-color: white;
+    /*border-left-style: solid;*/
+}
+
+.nav-link sample i {
+    display:none;
+}
+
+.nav-treeview > .nav-item > .no-hover:hover {
+    background-color: transparent !important;
+}
+
+.dbrd-icon:hover {
+    color: #1A8DDF;
+}
+
+.brand-link {
+    background: #081E44;
+    color: #fff !important;
+    border-bottom: 1px solid #081E44 !important;
+}
+
+.nav-treeview > .nav-item > .nav-link {
+    color: #BCCEEB !important;
+}
+
+.nav-treeview > .nav-item > .nav-link.active {
+    background-color: #081E44 !important;
+    color: #6274FF !important;
+}
+
+    .nav-treeview > .nav-item > .nav-link:hover {
+        background-color: #081E44 !important;
+        color: #fff !important;
+    }
+
+.brand-link .brand-image {
+    max-height: 50px !important;
+}
+
+#dashboard-name {
+    padding-left: 5px;
+    margin-left: 50px !important;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.nav-treeview > .nav-item-heading > .nav-link:hover {
+    background-color: transparent !important;
+}
+
+.nav-sidebar > .nav-item > .nav-link.active {
+    background-color: #081E44 !important;
+    color: #fff !important;
+}
+
+.toaster-block {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    float: right;
+    display: none;
+}
+
+.nav-link.sample:hover .dashboard-text {
+    width: 175px !important;
+}
+
+
+/*.layout-fixed .brand-link {
+    width: 299px !important;
+}*/
+
+/*.main-sidebar {
+    width: 251px !important;
+}*/
+
+button.e-control.e-btn.e-lib.e-primary.e-flat {
+    background-color: #3bacf6 !important;
+    width: 50px !important;
+}
+
+.e-control.e-dialog .e-footer-content .e-btn {
+    width: 50px !important;
+    margin-right: 5px;
+    border-radius: 5px !important;
+}
+
+.e-footer-content {
+    padding-bottom: 20px !important;
+}
+
+.card-success.card-outline {
+    border-top: 5px solid #3bacf6 !important;
+}
+
+.openbtn {
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    padding: 0;
+    border: 1px solid;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 17px;
+    background-color: #081E44;
+    position: absolute;
+    z-index: 10;
+    margin: 6px;
+    overflow: visible;
+    margin-left: 300px;
+}}
+
+.collapse {
+    width: 0 !important;
+}
+
+.buttonCollapse {
+    margin-left: 0 !important;
+}
+
+.headerCollapse {
+    margin-left: 0 !important;
+}
+
+.contentCollapse {
+    margin-left: 0 !important;
+} 

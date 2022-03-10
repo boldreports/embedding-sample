@@ -1,0 +1,15 @@
+{
+  "EmbedSecret": "Embed Secret code of Bold BI",
+  "ReportEmbedSecret": "Embed Secret code of Bold Reports server",
+  "Serverurl": "Enter the server url of Bold BI",
+  "ReportServerurl": "Enter the server url of Bold Reports server",
+  "Email": "Enter the admin user of email of Bold BI ",
+  "ReportEmail": "Enter the admin user of email of Bold Reports server",
+  "Environment": "on-premise",
+  "DisplayName": "John Doe",
+  "BaseUrl": "https://localhost:44390",
+  "SiteIdentifier": "site/{tenant-name}",
+  "ReportSiteIdentifier": "site/{tenant-name}",
+  "RootUrl": "Enter the root url of Bold BI",
+  "ReportRootUrl": "Enter the root url of Bold Reports server"
+}

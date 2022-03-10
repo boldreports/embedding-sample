@@ -1,0 +1,31 @@
+﻿﻿@{
+    var globalAppSettings = ViewBag.GlobalAppSettings as GlobalAppSettings;
+    var title = string.IsNullOrWhiteSpace(Model?.Title) ? "" : Model.Title;
+    var reportPath = string.IsNullOrWhiteSpace(Model?.DashboardPath) ? "" : Model.DashboardPath;
+    var serviceAuthorizationToken = ViewBag.ServiceAuthorizationToken;
+    var reportServerURL = globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + globalAppSettings.EmbedDetails.ReportSiteIdentifier;
+    var reportViewerServiceURL = globalAppSettings.EmbedDetails.ReportRootUrl + "/reportservice/api/Viewer";
+    var reportID = Model.ItemID;
+}
+
+@model SampleCoreApp.Models.SamplesTreeViewModel
+@using Microsoft.AspNetCore.Http;
+@using SampleCoreApp.Controllers;
+@using SampleCoreApp;
+@using System.Web;
+@using Newtonsoft.Json;
+<div id="reportContainer" class="tab-pane" style="height:100%;width:100%; overflow:hidden">
+    <div style="height:100%;width:100%;overflow: hidden !important;" id="reportingTool"></div>
+</div>
+<script type="text/javascript">
+    document.title = "Bold Reports";
+    var serviceAuthorizationToken = "@serviceAuthorizationToken";
+    var reportPath = "@reportPath";
+    var reportServerURL = "@reportServerURL";
+    var reportViewerServiceURL = "@reportViewerServiceURL";
+    var reportID = "@reportID";
+
+    $(document).ready(function () {https://gitlab.syncfusion.com/data-science/embedded-bi-shell/blob/development/EmbededShell/EmbeddedbiShell/Models/SamplesManager.cs
+        addReportViewer();
+    });
+</script>
