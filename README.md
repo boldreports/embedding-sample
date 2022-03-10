@@ -14,6 +14,7 @@
 9. Please change the below properties as per your Bold BI and Bold Reports Server,
 
 | Serverurl           | Provide your Dashboard Server BI URL (eg: http://localhost:5000/bi/site/{tenant-name}, http://demo.boldbi.com/bi/site/{tenant-name})                                                                                              |
+|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | ReportServerurl     | Provide your Bold Reports Server  URL (eg: http://localhost:5000/reporting/site/{tenant-name}, http://demo.boldreports.com/reporting/site/{tenant-name})                                                                          |
 | SiteIdentifier      | Provide your Bold BI site identifier it should be like `site/{tenant-name}`. For eg:site/site1.                                                                                                                                   |
 | ReportSiteIdentifier| Provide your  Bold Reports Server site identifier, it should be like `site/{tenant-name}`. For eg:site/site1.                                                                                                                     |
