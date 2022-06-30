@@ -133,7 +133,7 @@ function EditDashboard(args) {
 
 $("#save-item").on("click", function () {
     var name = getParams(document.location.href, "name");
-    var dbrdInstance = $("#sample_dashboard_embeddedbi").data("ejDashboardDesigner");
+    var dbrdInstance = $("#sample_dashboard_embeddedbi").data("BoldBIDashboardDesigner");
     var id = getParams(document.location.href, "id");
     if (name === undefined) {
         name = dbrdInstance.model.dashboardName;

@@ -86,12 +86,12 @@ namespace SampleCoreApp.Models
             var globalAppSettings = new GlobalAppSettings();
             try
             {
-                var filePath = Startup.BasePath + "\\app_data\\" + hostName;
+                var filePath = Startup.BasePath + "/App_Data/" + hostName;
                 globalAppSettings.Identity = hostName;
                 globalAppSettings = GetJsonData(filePath, globalAppSettings);
                 globalAppSettings = GetEmbedDetails(filePath, globalAppSettings);
                 //globalAppSettings = GetUserDetails(filePath, globalAppSettings);
-                SamplesCollectionManager samplesCollectionManager = new SamplesCollectionManager(filePath + "\\samples.xml");
+                SamplesCollectionManager samplesCollectionManager = new SamplesCollectionManager(filePath + "/Samples.xml");
                 globalAppSettings.SamplesCollection = samplesCollectionManager.GetTreeViewModelCollection();
                 globalAppSettings.SamplesSchemaCollection = samplesCollectionManager.GetSchemaViewModel();
                 return globalAppSettings;
@@ -105,7 +105,7 @@ namespace SampleCoreApp.Models
         public GlobalAppSettings GetJsonData(string filePath, GlobalAppSettings globalAppSettings)
         {
             Component component = new Component();
-            filePath = filePath + "\\themes.json";
+            filePath = filePath + "/themes.json";
             using (StreamReader reader = new StreamReader(filePath))
             {
                 string json = reader.ReadToEnd();
@@ -142,7 +142,7 @@ namespace SampleCoreApp.Models
 
         public GlobalAppSettings GetEmbedDetails(string filepath,GlobalAppSettings globalAppSettings)
         {
-            using (StreamReader reader = new StreamReader(filepath + "\\embedDetails.json"))
+            using (StreamReader reader = new StreamReader(filepath + "/embedDetails.json"))
             {
                 string json = reader.ReadToEnd();
                 var embedDetails = JsonConvert.DeserializeObject<EmbedDetails>(json);
@@ -175,7 +175,7 @@ namespace SampleCoreApp.Models
 
         public GlobalAppSettings GetUpdateSchema(GlobalAppSettings globalAppSettings, string email = null)
         {
-            SamplesCollectionManager samplesCollectionManager = new SamplesCollectionManager(Startup.BasePath + "\\app_data\\default\\samples.xml", email);
+            SamplesCollectionManager samplesCollectionManager = new SamplesCollectionManager(Startup.BasePath + "/App_Data/default/Samples.xml", email);
             globalAppSettings.SamplesCollection = samplesCollectionManager.GetTreeViewModelCollection();
             globalAppSettings.SamplesSchemaCollection = samplesCollectionManager.GetSchemaViewModel();
             globalAppSettings.UserToken = new DashboardModel().GetToken(email);

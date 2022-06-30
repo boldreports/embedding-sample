@@ -16,7 +16,7 @@ namespace SampleCoreApp.Models
         public DashboardModel()
         {
             _globalAppSettings = new GlobalAppSettings();
-            var filePath = Startup.BasePath + "\\app_data\\" + "default";
+            var filePath = Startup.BasePath + "/App_Data/" + "default";
             _globalAppSettings = new TenantModel().GetEmbedDetails(filePath, _globalAppSettings);
         }
 

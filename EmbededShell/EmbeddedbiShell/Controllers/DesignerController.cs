@@ -51,7 +51,7 @@ namespace SampleCoreApp.Controllers
             else
             {
                 updatedSettings = _tenantModel.GetUpdateSchema(_globalAppSettings);
-                ViewBag.DatasourceName = _globalAppSettings.EmbedDetails.Email.Split('@')[0];
+                ViewBag.DatasourceName = "NorthWind";
             }
 
             var categories = new DashboardModel().GetCategories(email);

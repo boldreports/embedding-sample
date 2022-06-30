@@ -220,7 +220,7 @@ namespace SampleCoreApp.Controllers
                     }
                     var reports = new ReportModel().GetItems(userToken, "Report").FirstOrDefault(k => k.Name == model.Name);
                     var reportLocation = reports.ItemLocation.Split("\\");
-                    var version = reportLocation[reportLocation.Length - 2];
+                    var version = reportLocation[reportLocation.Length - 1];
                     ViewBag.Version = version;
                     string reportPath = model.DashboardPath.Trim('/');
                     ViewBag.CatagoryName = reportPath.Substring(0, reportPath.IndexOf("/"));
