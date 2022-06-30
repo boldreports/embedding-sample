@@ -22,7 +22,7 @@ namespace SampleCoreApp.Models
         public ReportModel()
         {
             _globalAppSettings = new GlobalAppSettings();
-            var filePath = Startup.BasePath + "\\app_data\\" + "default";
+            var filePath = Startup.BasePath + "/App_Data/" + "default";
             _globalAppSettings = new TenantModel().GetEmbedDetails(filePath, _globalAppSettings);
             ReportServerApiUrl = this._globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + _globalAppSettings.EmbedDetails.ReportSiteIdentifier;
 
@@ -31,7 +31,7 @@ namespace SampleCoreApp.Models
         public ReportModel(string sitename)
         {
             _globalAppSettings = new GlobalAppSettings();
-            var filePath = Startup.BasePath + "\\app_data\\" + "default";
+            var filePath = Startup.BasePath + "/App_Data/" + "default";
             _globalAppSettings = new TenantModel().GetEmbedDetails(filePath, _globalAppSettings);
             ReportServerApiUrl = this._globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + _globalAppSettings.EmbedDetails.ReportSiteIdentifier;
         }
@@ -307,7 +307,7 @@ namespace SampleCoreApp.Models
                 });
 
                 client.DefaultRequestHeaders.Add("Authorization", token);
-                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/items/is-name-exists", content).Result;
+                var response = client.PostAsync(this.ReportServerApiUrl + "/v1.0/items/is-name-exists", content).Result;
                 string resultContent = response.Content.ReadAsStringAsync().Result;
                 return resultContent;
             }

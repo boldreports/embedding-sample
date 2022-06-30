@@ -573,7 +573,7 @@ function DeleteServerReport(args, reportDeleteUrl, itemId, reportName) {
         data: { itemId: itemId, userEmail: userEmail },
         success: function (response) {
 
-            if (response === "NoContent") {
+            if (response === "OK") {
                 $("#header-text").html(reportName + " deleted successfully");
                 $("#card_item").css("display", "block");
                 $(".toaster-block").css("display", "block");
