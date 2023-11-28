@@ -124,7 +124,8 @@ namespace SampleCoreApp.Controllers
         public object DataSet()
         {
             List<ReportModel.ApiItems> response = new ReportModel().GetSharedDatset();
-            FileStream readStream = System.IO.File.OpenRead(@response[0].ItemLocation);
+            string itemLocation = new ReportModel().GetItemLocation("Dataset", response[0].Name);
+            FileStream readStream = System.IO.File.OpenRead(itemLocation);
 
             ReportSerializer reportSerializer = new ReportSerializer();
             var dataset = reportSerializer.GetSharedDataSet(readStream);
@@ -218,12 +219,25 @@ namespace SampleCoreApp.Controllers
                         var sample = menuItem.Samples.FirstOrDefault(j => j.Name.ToLower() == sampleName.ToLower());
                         sample.IsEdit = edit;
                     }
-                    var reports = new ReportModel().GetItems(userToken, "Report").FirstOrDefault(k => k.Name == model.Name);
-                    var reportLocation = reports.ItemLocation.Split("\\");
-                    var version = reportLocation[reportLocation.Length - 1];
-                    ViewBag.Version = version;
                     string reportPath = model.DashboardPath.Trim('/');
-                    ViewBag.CatagoryName = reportPath.Substring(0, reportPath.IndexOf("/"));
+                    string currentCategoryName = reportPath.Substring(0, reportPath.IndexOf("/"));
+                    ViewBag.CatagoryName = currentCategoryName;
+                    var reports = new ReportModel().GetItems(userToken, "Report").FirstOrDefault(k => k.Name == model.Name);
+                    var reportLocation = new ReportModel().GetItemLocation("Report", "/" + currentCategoryName + "/" + sampleName);
+
+                    //linux
+                    var currentReportLocation = reportLocation.Split('/');
+                    var extractVersion = currentReportLocation[currentReportLocation.Length - 2];
+                    string[] version = extractVersion.Split('/');
+                    int versionNumber = int.Parse(version[0]);
+
+                    //windows
+                    //var currentReportLocation = reportLocation.Split("\\");
+                    //var extractVersion = currentReportLocation[currentReportLocation.Length - 2];
+                    //string[] version = extractVersion.Split('/');
+                    //int versionNumber = int.Parse(version[1]);
+
+                    ViewBag.Version = versionNumber;
                     ViewBag.ReportName = model.Name;
                     ViewBag.isDraft = false;
                 }
@@ -320,6 +334,12 @@ namespace SampleCoreApp.Controllers
         public async Task<string> IsReportExist(string itemName, string categoryName, string userEmail)
         {
             var response = await Task.Run(() => new ReportModel().IsItemExist("Report", itemName, categoryName, userEmail));
+            return response.ToString();
+        }
+        [Route("is-draft-exist/report")]
+        public async Task<object> IsDraftReportExist(string itemName, string userEmail)
+        {
+            var response = new ReportModel().IsDraftExists(itemName, userEmail);
             return response.ToString();
         }
     }
