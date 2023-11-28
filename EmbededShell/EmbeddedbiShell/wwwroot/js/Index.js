@@ -143,8 +143,8 @@ $("#save-item").on("click", function () {
         'categoryId': category.Id,
         'name': name,
         'description': '',
-        'id': dbrdInstance.model.itemId,
-        'eventType': DashboardDesignerEvent.Save
+        'id': dbrdInstance.model.itemId
+        //'eventType': DashboardDesignerEvent.Save
     };
 
     dbrdInstance.saveDashboardToServer(info);
@@ -273,7 +273,7 @@ function CloseItem() {
 function deleteItem(args, dbrdName, itemId) {
     var dlgContent = 'Are you sure you want to delete the Dashboard - ' + dbrdName + '?';
 
-    var dialogObj = new ejdashboard.popups.Dialog({
+    var dialogObj = new ejs.popups.Dialog({
         header: "Delete Dashboard",
         content: dlgContent,
         width: '420px',
