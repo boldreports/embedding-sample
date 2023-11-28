@@ -895,17 +895,15 @@ function reportSaved(args) {
         }
     }
 }
-
 function reportModified(args) {
     if (args.isModified) {
     }
 }
-
 function reportOpened(args) {
     isEditReport = true;
-    var designer = $('#' + controlId).data('boldReportDesigner');
-    var dataSets = JSON.parse(sharedDatasets);
-    addSharedDatasets(dataSets);
+    //var designer = $('#' + controlId).data('boldReportDesigner');
+    //var dataSets = JSON.parse(sharedDatasets);
+    //addSharedDatasets(dataSets);
     if (!args.isServerReport) {
         //history.pushState('', newTitle, window.location.href.split("report-designer")[0] + "report-designer");
     }
