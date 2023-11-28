@@ -1191,9 +1191,12 @@ $(document).ready(function () {
         $('#header').toggleClass('headerCollapse');
         $('#content').toggleClass('contentCollapse');
         $('#icon').toggleClass('fa-angle-right');
-        setTimeout(function () {
-            $("#sample_dashboard_embeddedbi").data('ejDashboardDesigner').resizeDashboard();
-        }, 100);
+        var instance = $("#sample_dashboard_embeddedbi").data('BoldBIDashboardDesigner');
+        if(instance != null){
+            setTimeout(function () {
+                instance.resizeDashboard(); 
+            }, 100);
+        }
         //$("#reportingTool").data('boldReportDesigner').designerResize();
         //setTimeout(function () {
         //    $("#reportingTool").data('boldReportDesigner').designerResize();
