@@ -246,7 +246,7 @@ function CreateReport() {
     var dialogObj2 = new ejs.popups.Dialog({
         header: "Create Report",
         content: dlgContent,
-        width: '420px',
+        width: '470px',
         showCloseIcon: true,
         closeOnEscape: true,
 
@@ -265,7 +265,10 @@ function CreateReport() {
                     else {
                         dialogObj2.destroy();
                         IsReportExist(reportName, "New Report", function () {
-                            openReportDesignerForCreate(reportName);
+                            IsDraftReportExist(reportName, "New Report", function () {
+                                openReportDesignerForCreate(reportName);
+                            })
+                            
                         });
                     }
                 },
@@ -318,7 +321,10 @@ function CreateNewReportFromDatasource(args, datasourceName) {
                     }
                     else {
                         IsReportExist(reportName, "New Report", function () {
-                            openReportDesignerForCreateWithDatasource(reportName, datasourceName);
+                            IsDraftReportExist(reportName, "New Report", function () {
+                                openReportDesignerForCreate(reportName);
+                            })
+
                         });
                     }
                 },
@@ -365,7 +371,10 @@ $(document).on("click", "#create-report", function () {
     }
     else {
         IsReportExist(reportName, "New Report", function () {
-            openReportDesignerForCreate(reportName);
+            IsDraftReportExist(reportName, "New Report", function () {
+                openReportDesignerForCreate(reportName);
+            })
+
         });
     }
 });
@@ -414,6 +423,74 @@ function IsReportExist(reportName, dlgHeader, callback) {
                 $("#report-loading-icon").css("display", "block");
                 $("#item-loading-icon").css("display", "block");
                 var dlg = "Entered report name -\"" + reportName + "\" has been already exist";
+                document.body.style.pointerEvents = "none";
+                document.getElementById("dialog").style.pointerEvents = "auto";
+                var dlgObj = new ejs.popups.Dialog({
+                    header: dlgHeader,
+                    content: dlg,
+                    width: '420px',
+                    showCloseIcon: true,
+                    closeOnEscape: true,
+                    buttons: [
+                        {
+                            'click': () => {
+                                dlgObj.hide();
+                                document.body.style.pointerEvents = "auto";
+                                $("#loading-item").removeClass("show-flex");
+                                $("#loading-item").addClass("hide");
+                                $("#loading_icon").addClass("hide");
+                                $("#loading_icon").removeClass("show-flex");
+                                $("#close-report-item").css("display", "block");
+                                $("#create-report").css("display", "block");
+                                $("#close-report").css("display", "block");
+                                $("#report-loading-icon").css("display", "none");
+                                $("#item-loading-icon").css("display", "none");
+                                $("#report-name").val("");
+                            },
+                            buttonModel: { content: 'OK', isPrimary: true }
+                        }
+                    ],
+                    close: function () {
+                        document.body.style.pointerEvents = "auto";
+                        $("#loading-item").removeClass("show-flex");
+                        $("#loading-item").addClass("hide");
+                        $("#loading_icon").addClass("hide");
+                        $("#loading_icon").removeClass("show-flex");
+                        $("#close-report-item").css("display", "block");
+                        $("#create-report").css("display", "block");
+                        $("#close-report").css("display", "block");
+                        $("#report-loading-icon").css("display", "none");
+                        $("#item-loading-icon").css("display", "none");
+                        $("#report-name").val("");
+                        dlgObj.destroy();
+                    }
+                });
+                dlgObj.appendTo('#dialog');
+            }
+            else {
+                callback();
+            }
+        }
+    });
+}
+
+function IsDraftReportExist(reportName, dlgHeader, callback) {
+    var userEmail = getParams(document.location.href, "email");
+    $.ajax({
+        type: "POST",
+        url: isDraftReportExistsUrl,
+        data: { itemName: reportName, userEmail: currentReportUserEmail },
+        success: function (response) {
+            if (response === "true") {
+                $("#loading-item").removeClass("show-flex");
+                $("#loading-item").addClass("hide");
+                $("#close-report-item").css("display", "none");
+                $("#create-report").css("display", "none");
+                $("#close-report").css("display", "none");
+                $("#delete-item").css("display", "none");
+                $("#report-loading-icon").css("display", "block");
+                $("#item-loading-icon").css("display", "block");
+                var dlg = "Entered report name -\"" + reportName + "\" has been already exist in drafts";
                 document.body.style.pointerEvents = "none";
                 document.getElementById("dialog").style.pointerEvents = "auto";
                 var dlgObj = new ejs.popups.Dialog({
