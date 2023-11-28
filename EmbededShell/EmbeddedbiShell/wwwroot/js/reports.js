@@ -60,7 +60,7 @@ function SaveAsNewReportDialog() {
                     else {
                         IsReportExist(saveAsreportName, "New Report", function () {
                             SaveAsNewReport(true, saveAsreportName);
-                        });
+                        });   
                     }
                 },
                 buttonModel: { content: 'Create', isPrimary: true }
@@ -859,8 +859,8 @@ function getDataSet() {
 
 function controlInitialized(args) {
     var designer = $('#' + controlId).data('boldReportDesigner');
-    if (args && args.IsDraft) {
-        designer.openDraftReport(reportName);
+    if (args && isDraft == "false") {
+        designer.openReport(categoryName + '/' + reportName);
     }
     else {
         designer.newServerReport(reportName);
