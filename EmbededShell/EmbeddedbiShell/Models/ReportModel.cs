@@ -253,13 +253,8 @@ namespace SampleCoreApp.Models
                 client.BaseAddress = new Uri(_globalAppSettings.EmbedDetails.ReportRootUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.ConnectionClose = false;
-                var content = new FormUrlEncodedContent(new[]
-               {
-                    new KeyValuePair<string, string>("name", itemName.ToLower()),
-                });
-
                 client.DefaultRequestHeaders.Add("Authorization", token);
-                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/reports/draft", content).Result;
+                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/reports/draft?name="+itemName,null).Result;
                 string resultContent = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<object>(resultContent);
                 return result;
