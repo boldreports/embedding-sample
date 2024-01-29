@@ -81,19 +81,6 @@ function SaveAsNewReportDialog() {
     dialogObj1.appendTo('#sub-dialog');
 }
 
-String.prototype.replaceAll = function (searchStr, replaceStr) {
-    var str = this;
-
-    // no match exists in string?
-    if (str.indexOf(searchStr) === -1) {
-        // return string
-        return str;
-    }
-
-    // replace and remove first match, and do another recursirve search/replace
-    return (str.replace(searchStr, replaceStr)).replaceAll(searchStr, replaceStr);
-}
-
 function saveReport() {
     var designer = $('#' + controlId).data('boldReportDesigner');
     var userEmail = getParams(document.location.href, "email");
