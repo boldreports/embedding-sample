@@ -13,12 +13,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using Newtonsoft.Json;
+using Microsoft.Extensions.FileProviders;
 
 namespace SampleCoreApp
 {
     public class Startup
     {
         public static string BasePath { get; set; }        
+
+        private string applicationPath = "/embed";
+        private string applicationPath1 = "/embed-staging";
 
         public Startup(IConfiguration configuration)
         {
@@ -58,7 +62,19 @@ namespace SampleCoreApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.WebRootPath)),
+                RequestPath = applicationPath,
+            });
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.WebRootPath)),
+                RequestPath = applicationPath1,
+            });
             app.UseCookiePolicy();
+            app.UsePathBase(applicationPath);
+            app.UsePathBase(applicationPath1);
             app.UseMvc(routes =>
             {
                 routes.MapRoute("dashboardsample", "{categoryName}/{sampleName?}",

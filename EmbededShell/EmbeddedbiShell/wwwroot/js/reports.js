@@ -60,7 +60,7 @@ function SaveAsNewReportDialog() {
                     else {
                         IsReportExist(saveAsreportName, "New Report", function () {
                             SaveAsNewReport(true, saveAsreportName);
-                        });
+                        });   
                     }
                 },
                 buttonModel: { content: 'Create', isPrimary: true }
@@ -79,19 +79,6 @@ function SaveAsNewReportDialog() {
         }
     });
     dialogObj1.appendTo('#sub-dialog');
-}
-
-String.prototype.replaceAll = function (searchStr, replaceStr) {
-    var str = this;
-
-    // no match exists in string?
-    if (str.indexOf(searchStr) === -1) {
-        // return string
-        return str;
-    }
-
-    // replace and remove first match, and do another recursirve search/replace
-    return (str.replace(searchStr, replaceStr)).replaceAll(searchStr, replaceStr);
 }
 
 function saveReport() {
@@ -246,7 +233,7 @@ function CreateReport() {
     var dialogObj2 = new ejs.popups.Dialog({
         header: "Create Report",
         content: dlgContent,
-        width: '420px',
+        width: '470px',
         showCloseIcon: true,
         closeOnEscape: true,
 
@@ -265,7 +252,10 @@ function CreateReport() {
                     else {
                         dialogObj2.destroy();
                         IsReportExist(reportName, "New Report", function () {
-                            openReportDesignerForCreate(reportName);
+                            IsDraftReportExist(reportName, "New Report", function () {
+                                openReportDesignerForCreate(reportName);
+                            })
+                            
                         });
                     }
                 },
@@ -318,7 +308,10 @@ function CreateNewReportFromDatasource(args, datasourceName) {
                     }
                     else {
                         IsReportExist(reportName, "New Report", function () {
-                            openReportDesignerForCreateWithDatasource(reportName, datasourceName);
+                            IsDraftReportExist(reportName, "New Report", function () {
+                                openReportDesignerForCreate(reportName);
+                            })
+
                         });
                     }
                 },
@@ -365,7 +358,10 @@ $(document).on("click", "#create-report", function () {
     }
     else {
         IsReportExist(reportName, "New Report", function () {
-            openReportDesignerForCreate(reportName);
+            IsDraftReportExist(reportName, "New Report", function () {
+                openReportDesignerForCreate(reportName);
+            })
+
         });
     }
 });
@@ -414,6 +410,74 @@ function IsReportExist(reportName, dlgHeader, callback) {
                 $("#report-loading-icon").css("display", "block");
                 $("#item-loading-icon").css("display", "block");
                 var dlg = "Entered report name -\"" + reportName + "\" has been already exist";
+                document.body.style.pointerEvents = "none";
+                document.getElementById("dialog").style.pointerEvents = "auto";
+                var dlgObj = new ejs.popups.Dialog({
+                    header: dlgHeader,
+                    content: dlg,
+                    width: '420px',
+                    showCloseIcon: true,
+                    closeOnEscape: true,
+                    buttons: [
+                        {
+                            'click': () => {
+                                dlgObj.hide();
+                                document.body.style.pointerEvents = "auto";
+                                $("#loading-item").removeClass("show-flex");
+                                $("#loading-item").addClass("hide");
+                                $("#loading_icon").addClass("hide");
+                                $("#loading_icon").removeClass("show-flex");
+                                $("#close-report-item").css("display", "block");
+                                $("#create-report").css("display", "block");
+                                $("#close-report").css("display", "block");
+                                $("#report-loading-icon").css("display", "none");
+                                $("#item-loading-icon").css("display", "none");
+                                $("#report-name").val("");
+                            },
+                            buttonModel: { content: 'OK', isPrimary: true }
+                        }
+                    ],
+                    close: function () {
+                        document.body.style.pointerEvents = "auto";
+                        $("#loading-item").removeClass("show-flex");
+                        $("#loading-item").addClass("hide");
+                        $("#loading_icon").addClass("hide");
+                        $("#loading_icon").removeClass("show-flex");
+                        $("#close-report-item").css("display", "block");
+                        $("#create-report").css("display", "block");
+                        $("#close-report").css("display", "block");
+                        $("#report-loading-icon").css("display", "none");
+                        $("#item-loading-icon").css("display", "none");
+                        $("#report-name").val("");
+                        dlgObj.destroy();
+                    }
+                });
+                dlgObj.appendTo('#dialog');
+            }
+            else {
+                callback();
+            }
+        }
+    });
+}
+
+function IsDraftReportExist(reportName, dlgHeader, callback) {
+    var userEmail = getParams(document.location.href, "email");
+    $.ajax({
+        type: "POST",
+        url: isDraftReportExistsUrl,
+        data: { itemName: reportName, userEmail: currentReportUserEmail },
+        success: function (response) {
+            if (response === "true") {
+                $("#loading-item").removeClass("show-flex");
+                $("#loading-item").addClass("hide");
+                $("#close-report-item").css("display", "none");
+                $("#create-report").css("display", "none");
+                $("#close-report").css("display", "none");
+                $("#delete-item").css("display", "none");
+                $("#report-loading-icon").css("display", "block");
+                $("#item-loading-icon").css("display", "block");
+                var dlg = "Entered report name -\"" + reportName + "\" has been already exist in drafts";
                 document.body.style.pointerEvents = "none";
                 document.getElementById("dialog").style.pointerEvents = "auto";
                 var dlgObj = new ejs.popups.Dialog({
@@ -573,7 +637,7 @@ function DeleteServerReport(args, reportDeleteUrl, itemId, reportName) {
         data: { itemId: itemId, userEmail: userEmail },
         success: function (response) {
 
-            if (response === "NoContent") {
+            if (response === "OK") {
                 $("#header-text").html(reportName + " deleted successfully");
                 $("#card_item").css("display", "block");
                 $(".toaster-block").css("display", "block");
@@ -782,8 +846,8 @@ function getDataSet() {
 
 function controlInitialized(args) {
     var designer = $('#' + controlId).data('boldReportDesigner');
-    if (args && args.IsDraft) {
-        designer.openDraftReport(reportName);
+    if (args && isDraft == "false") {
+        designer.openReport(categoryName + '/' + reportName);
     }
     else {
         designer.newServerReport(reportName);
@@ -818,17 +882,15 @@ function reportSaved(args) {
         }
     }
 }
-
 function reportModified(args) {
     if (args.isModified) {
     }
 }
-
 function reportOpened(args) {
     isEditReport = true;
-    var designer = $('#' + controlId).data('boldReportDesigner');
-    var dataSets = JSON.parse(sharedDatasets);
-    addSharedDatasets(dataSets);
+    //var designer = $('#' + controlId).data('boldReportDesigner');
+    //var dataSets = JSON.parse(sharedDatasets);
+    //addSharedDatasets(dataSets);
     if (!args.isServerReport) {
         //history.pushState('', newTitle, window.location.href.split("report-designer")[0] + "report-designer");
     }
@@ -1116,9 +1178,12 @@ $(document).ready(function () {
         $('#header').toggleClass('headerCollapse');
         $('#content').toggleClass('contentCollapse');
         $('#icon').toggleClass('fa-angle-right');
-        setTimeout(function () {
-            $("#sample_dashboard_embeddedbi").data('ejDashboardDesigner').resizeDashboard();
-        }, 100);
+        var instance = $("#sample_dashboard_embeddedbi").data('BoldBIDashboardDesigner');
+        if(instance != null){
+            setTimeout(function () {
+                instance.resizeDashboard(); 
+            }, 100);
+        }
         //$("#reportingTool").data('boldReportDesigner').designerResize();
         //setTimeout(function () {
         //    $("#reportingTool").data('boldReportDesigner').designerResize();

@@ -183,19 +183,42 @@
 
 button.e-control.e-btn.e-lib.e-primary.e-flat {
     background-color: #3bacf6 !important;
-    width: 50px !important;
+    width: 78px !important;
+    height: 30px;
+    color: black;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
 }
 
 .e-control.e-dialog .e-footer-content .e-btn {
-    width: 50px !important;
+    width: 78px !important;
+    height: 30px;
     margin-right: 5px;
     border-radius: 5px !important;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: none;
+    /*font-size: 14px;
+    border-color: #4f46e5;*/
 }
 
-.e-footer-content {
-    padding-bottom: 20px !important;
+.e-control.e-dialog.e-lib.e-popup.e-popup-open {
+    box-shadow: 0 12px 40px 5px rgba(0,0,0,.26) !important;
+    border-radius: 6px;
 }
 
+.e-dialog .e-dlg-header-content{
+    padding: 18px !important;
+}
+/*.e-control.e-dialog .e-icon-dlg-close::before {
+    content: '╳' !important; 
+    font-weight: bold;
+}
+
+.e-control.e-dialog .e-dlg-header-content .e-btn.e-dlg-closeicon-btn {
+    background-color: #ebe9e9;
+}*/
 .card-success.card-outline {
     border-top: 5px solid #3bacf6 !important;
 }
@@ -216,7 +239,7 @@ button.e-control.e-btn.e-lib.e-primary.e-flat {
     margin: 6px;
     overflow: visible;
     margin-left: 300px;
-}}
+}
 
 .collapse {
     width: 0 !important;

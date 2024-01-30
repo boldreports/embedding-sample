@@ -264,7 +264,7 @@
                                                             <i class="far"> </i>
                                                             <p data-src="@sampleUrl" onclick="ViewDashboard(this)" class="dashboard-text" style="padding-top: 5px;">@sample.Name</p>
                                                             @*<i id="share-item" onclick="ShareDashboard('@sample.IsPublic', '@sample.Name', '@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-share-alt dbrd-icon"> </i>*@
-                                                            <i id="refresh-item" onclick="RefreshDashboard('@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-sync-alt dbrd-icon"> </i>
+                                                            @* <i id="refresh-item" onclick="RefreshDashboard('@sample.ItemID')" style="display:none; vertical-align: super;" class="nav-option fas fa-sync-alt dbrd-icon"> </i> *@
                                                             <i id="edit-item" onclick="EditDashboard(this)" data-ng-animate="@sample.Name" style="display: none; vertical-align: super;" class="nav-option dbrd-icon fas fa-pencil-alt"> </i>
                                                             <i id="delete-item" onclick="deleteItem(this, '@sample.Name','@sample.ItemID')" style="display: none; vertical-align: super;" class="nav-option fas fa-trash-alt dbrd-icon"> </i>
                                                         }
@@ -319,6 +319,7 @@
     var baseUrl = "@baseUrl";
     var draftUrl = "@Url.Action("AddReportDraft", "Report")";
     var isReportExistUrl = "@Url.Action("IsReportExist", "Report")";
+    var isDraftReportExistsUrl = "@Url.Action("IsDraftReportExist","Report")";
     var reportviewerUrl = "@Url.Action("Viewer", "Report")";
     var reportDeleteUrl = "@Url.Action("DeleteItem", "Report")";
     var designerUrl = "@Url.Action("Index", "Designer")";

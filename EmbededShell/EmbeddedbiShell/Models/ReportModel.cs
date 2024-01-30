@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace SampleCoreApp.Models
         public ReportModel()
         {
             _globalAppSettings = new GlobalAppSettings();
-            var filePath = Startup.BasePath + "\\app_data\\" + "default";
+            var filePath = Startup.BasePath + "/App_Data/" + "default";
             _globalAppSettings = new TenantModel().GetEmbedDetails(filePath, _globalAppSettings);
             ReportServerApiUrl = this._globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + _globalAppSettings.EmbedDetails.ReportSiteIdentifier;
 
@@ -31,7 +32,7 @@ namespace SampleCoreApp.Models
         public ReportModel(string sitename)
         {
             _globalAppSettings = new GlobalAppSettings();
-            var filePath = Startup.BasePath + "\\app_data\\" + "default";
+            var filePath = Startup.BasePath + "/App_Data/" + "default";
             _globalAppSettings = new TenantModel().GetEmbedDetails(filePath, _globalAppSettings);
             ReportServerApiUrl = this._globalAppSettings.EmbedDetails.ReportRootUrl + "/api/" + _globalAppSettings.EmbedDetails.ReportSiteIdentifier;
         }
@@ -252,13 +253,8 @@ namespace SampleCoreApp.Models
                 client.BaseAddress = new Uri(_globalAppSettings.EmbedDetails.ReportRootUrl);
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.ConnectionClose = false;
-                var content = new FormUrlEncodedContent(new[]
-               {
-                    new KeyValuePair<string, string>("name", itemName.ToLower())
-                });
-
                 client.DefaultRequestHeaders.Add("Authorization", token);
-                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/reports/draft?name=" + itemName.ToLower(), content).Result;
+                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/reports/draft?name="+itemName,null).Result;
                 string resultContent = response.Content.ReadAsStringAsync().Result;
                 var result = JsonConvert.DeserializeObject<object>(resultContent);
                 return result;
@@ -307,7 +303,29 @@ namespace SampleCoreApp.Models
                 });
 
                 client.DefaultRequestHeaders.Add("Authorization", token);
-                var response = client.PostAsync(this.ReportServerApiUrl + "/v2.0/items/is-name-exists", content).Result;
+                var response = client.PostAsync(this.ReportServerApiUrl + "/v1.0/items/is-name-exists", content).Result;
+                string resultContent = response.Content.ReadAsStringAsync().Result;
+                return resultContent;
+            }
+        }
+
+        public string IsDraftExists(string name,string email)
+        {
+            var drafts = GetReportDrafts(email);
+            bool isExist = drafts.Any(draft => draft.Name == name);
+            return isExist ? "true" : "false";
+        }
+        public string GetItemLocation(string itemType, string ItemPath)
+        {
+            var token = GetTokenString(_globalAppSettings.EmbedDetails.Email);
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_globalAppSettings.EmbedDetails.ReportRootUrl);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.ConnectionClose = false;
+                client.DefaultRequestHeaders.Add("Authorization", token);
+                var response = client.GetAsync(this.ReportServerApiUrl + "/v3.0/items/location?itemType=" + itemType + "&serverPath=" + ItemPath).Result;
                 string resultContent = response.Content.ReadAsStringAsync().Result;
                 return resultContent;
             }
@@ -368,6 +386,7 @@ namespace SampleCoreApp.Models
             public string Description { get; set; }
 
             public bool IsDraft { get; set; }
+            public bool IsPublic {  get; set; }
         }
     }
 }
